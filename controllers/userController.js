@@ -33,17 +33,18 @@ export const registerUser = async (req, res) => {
     req.body.expire = new Date();
     req.body.expire.setMinutes(req.body.expire.getMinutes() + 10);
 
-    try {
-      await transporter.sendMail({
-        from: "subhoapi@gmail.com",
-        to: req.body.email,
-        subject: "Verify Email",
-        text: "Thank you for sign up with us. Your OTP is " + req.body.otp,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.sendStatus(500);
-    }
+    // TODO, turn on email
+    // try {
+    //   await transporter.sendMail({
+    //     from: "subhoapi@gmail.com",
+    //     to: req.body.email,
+    //     subject: "Verify Email",
+    //     text: "Thank you for sign up with us. Your OTP is " + req.body.otp,
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    //   return res.sendStatus(500);
+    // }
 
     user = new userModel(req.body);
     await user.save();
@@ -142,16 +143,17 @@ export const forgotPassword = async (req, res) => {
     user.expire = new Date();
     user.expire.setMinutes(user.expire.getMinutes() + 10);
 
-    try {
-      await transporter.sendMail({
-        from: "subhoapi@gmail.com",
-        to: user.email,
-        subject: "Forgot Password",
-        text: "Your OTP is " + user.otp,
-      });
-    } catch (error) {
-      return res.sendStatus(500);
-    }
+    // TODO, turn on email
+    // try {
+    //   await transporter.sendMail({
+    //     from: "subhoapi@gmail.com",
+    //     to: user.email,
+    //     subject: "Forgot Password",
+    //     text: "Your OTP is " + user.otp,
+    //   });
+    // } catch (error) {
+    //   return res.sendStatus(500);
+    // }
 
     await user.save();
 
