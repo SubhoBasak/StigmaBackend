@@ -167,7 +167,7 @@ export const forgotPassword = async (req, res) => {
  * @api /user/reset
  * @method POST
  * @param {Content-Type} req headers
- * @param {email, otp, old_password, new_password} req body
+ * @param {email, otp, password} req body
  */
 export const resetPassword = async (req, res) => {
   var user = await userModel.findOne({
@@ -180,10 +180,10 @@ export const resetPassword = async (req, res) => {
   }
 
   // validate informations
-  if (user.expire > new Date() && user.password === req.body.old_password) {
+  if (user.expire > new Date()) {
     user.otp = null;
     user.expire = null;
-    user.password = req.body.new_password;
+    user.password = req.body.password;
     await user.save();
 
     return res.sendStatus(200);

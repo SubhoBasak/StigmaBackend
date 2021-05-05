@@ -10,10 +10,6 @@ const userSchema = mongoose.Schema({
   bio: String,
   image: String,
   cover: String,
-  friends: [String],
-  requested: [String],
-  requests: [String],
-  blocked: [String],
 });
 
 export default mongoose.model("userModel", userSchema);
