@@ -1,15 +1,19 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config("../.env");
 
 const authUser = async (req, res, next) => {
-  const user = jwt.verify(req.headers.token, process.env.AUTH_TOKEN);
-  if (user) {
-    req.user = user.payLoad.user;
-    next();
-  } else {
-    return res.sendStaus(401);
+  try {
+    const user = jwt.verify(req.headers.authorization, process.env.AUTH_KEY);
+    if (user) {
+      req.user = user.payLoad.user;
+      next();
+    } else {
+      return res.sendStatus(401);
+    }
+  } catch (error) {
+    return res.sendStatus(401);
   }
 };
 

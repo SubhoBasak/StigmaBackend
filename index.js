@@ -8,6 +8,8 @@ import upload from "express-fileupload";
 
 // import routes
 import user from "./routers/user.js";
+import connection from "./routers/connection.js";
+import profile from "./routers/profile.js";
 
 dotenv.config();
 
@@ -20,7 +22,8 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-app.use(upload({ limits: 30 * 1024 * 1024 }));
+app.use(upload({ limits: 5 * 1024 * 1024 }));
+app.use(express.static("static"));
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -32,5 +35,7 @@ mongoose
 
 // routes
 app.use("/user", user);
+app.use("/connection", connection);
+app.use("/profile", profile);
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

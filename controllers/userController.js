@@ -20,6 +20,7 @@ var transporter = nodemailer.createTransport({
  * @method POST
  * @param {Content-Type} req headers
  * @param {name, email, password} req body
+ * @returns 200, 409, 500
  */
 export const registerUser = async (req, res) => {
   try {
@@ -61,34 +62,39 @@ export const registerUser = async (req, res) => {
  * @method POST
  * @param {Content-Type} req headers
  * @param {email, otp} res body
+ * @returns 200, 401, 404, 500
  */
 export const verifyEmail = async (req, res) => {
-  var user = await userModel.findOne({
-    email: req.body.email,
-    verified: false,
-  });
+  try {
+    var user = await userModel.findOne({
+      email: req.body.email,
+      verified: false,
+    });
 
-  // user not found
-  if (!user) {
-    return res.sendStatus(404);
+    // user not found
+    if (!user) {
+      return res.sendStatus(404);
+    }
+
+    // check otp
+    if (user.otp === req.body.otp && user.expire > new Date()) {
+      user.otp = null;
+      user.expire = null;
+      user.verified = true;
+      await user.save();
+
+      const token = jwt.sign(
+        { payLoad: { user: user._id } },
+        process.env.AUTH_KEY
+      );
+      return res.status(200).json({ token });
+    }
+
+    // invalid otp
+    return res.sendStatus(401);
+  } catch (error) {
+    return res.sendStatus(500);
   }
-
-  // check otp
-  if (user.otp === req.body.otp && user.expire > new Date()) {
-    user.otp = null;
-    user.expire = null;
-    user.verified = true;
-    await user.save();
-
-    const token = jwt.sign(
-      { payLoad: { user: user._id } },
-      process.env.AUTH_KEY
-    );
-    return res.status(200).json({ token });
-  }
-
-  // invalid otp
-  return res.sendStatus(401);
 };
 
 /**
@@ -96,6 +102,7 @@ export const verifyEmail = async (req, res) => {
  * @method POST
  * @param {Content-Type} req headers
  * @param {email, password} req body
+ * @returns 200, 401, 500
  */
 export const loginUser = async (req, res) => {
   try {
@@ -126,6 +133,7 @@ export const loginUser = async (req, res) => {
  * @method POST
  * @param {Content-Type} req headers
  * @param {email} req body
+ * @returns 200, 404, 500
  */
 export const forgotPassword = async (req, res) => {
   try {
@@ -168,27 +176,32 @@ export const forgotPassword = async (req, res) => {
  * @method POST
  * @param {Content-Type} req headers
  * @param {email, otp, password} req body
+ * @returns 200, 401, 404, 500
  */
 export const resetPassword = async (req, res) => {
-  var user = await userModel.findOne({
-    email: req.body.email,
-    otp: req.body.otp,
-  });
+  try {
+    var user = await userModel.findOne({
+      email: req.body.email,
+      otp: req.body.otp,
+    });
 
-  if (!user) {
-    return res.sendStatus(404);
+    if (!user) {
+      return res.sendStatus(404);
+    }
+
+    // validate informations
+    if (user.expire > new Date()) {
+      user.otp = null;
+      user.expire = null;
+      user.password = req.body.password;
+      await user.save();
+
+      return res.sendStatus(200);
+    }
+
+    // invalid informations
+    return res.sendStatus(401);
+  } catch (error) {
+    return res.sendStatus(500);
   }
-
-  // validate informations
-  if (user.expire > new Date()) {
-    user.otp = null;
-    user.expire = null;
-    user.password = req.body.password;
-    await user.save();
-
-    return res.sendStatus(200);
-  }
-
-  // invalid informations
-  return res.sendStatus(401);
 };
