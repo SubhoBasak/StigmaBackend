@@ -31,10 +31,12 @@ export const search = async (req, res) => {
         userA = req.user;
         userB = users[i]._id;
         aORb = true;
-      } else {
+      } else if (req.user > users[i]._id) {
         userA = users[i]._id;
         userB = req.user;
         aORb = false;
+      } else {
+        continue;
       }
 
       // check if there is any connection between them
@@ -199,6 +201,7 @@ export const get_requested = async (req, res) => {
       }
 
       requested[i] = {
+        uid: user._id,
         cid: requested[i]._id,
         image: user.image,
         name: user.name,
@@ -240,6 +243,7 @@ export const get_requests = async (req, res) => {
       }
 
       requests[i] = {
+        uid: user._id,
         cid: requests[i]._id,
         image: user.image,
         name: user.name,
@@ -278,6 +282,7 @@ export const get_connected = async (req, res) => {
       }
 
       connected[i] = {
+        uid: user._id,
         cid: connected[i]._id,
         image: user.image,
         name: user.name,
@@ -319,6 +324,7 @@ export const get_blocked = async (req, res) => {
       }
 
       blocked[i] = {
+        uid: user._id,
         cid: blocked[i]._id,
         image: user.image,
         name: user.name,
@@ -369,31 +375,21 @@ export const block_user = async (req, res) => {
  * @api /connection/unblock
  * @method DELETE
  * @param {Content-Type, Authorization} req headers
- * @param {user} req body
+ * @param {cid} req body
  * @returns 200, 405, 500
  */
 export const unblock_user = async (req, res) => {
   try {
-    var last;
-    if (req.user < req.body.user) {
-      var userA = req.user;
-      var userB = req.body.user;
-      last = true;
-    } else {
-      var userA = req.body.user;
-      var userB = req.user;
-      last = false;
-    }
+    var connection = await connectionModel.findById(req.body.cid);
 
-    var block = await connectionModel.findOne({
-      userA,
-      userB,
-      last,
-      status: 2,
-    });
-    if (block) {
-      await block.delete();
-      return res.sendStatus(200);
+    if (connection.status === "2") {
+      if (connection.userA === req.user && connection.last === true) {
+        await connection.delete();
+        return res.sendStatus(200);
+      } else if (connection.userB === req.user && connection.last === false) {
+        await connection.delete();
+        return res.sendStatus(200);
+      }
     }
     return res.sendStatus(405);
   } catch (error) {
