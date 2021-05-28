@@ -29,3 +29,5 @@ export const deleteAlbum = (req, res) => {
 };
 
 export const editAlbum = (req, res) => {};
+
+export const viewAlbum = (req, res) => {};

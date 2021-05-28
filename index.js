@@ -10,6 +10,8 @@ import upload from "express-fileupload";
 import user from "./routers/user.js";
 import connection from "./routers/connection.js";
 import profile from "./routers/profile.js";
+import post from "./routers/post.js";
+import newsFeed from "./routers/newsFeed.js";
 
 dotenv.config();
 
@@ -37,5 +39,7 @@ mongoose
 app.use("/user", user);
 app.use("/connection", connection);
 app.use("/profile", profile);
+app.use("/post", post);
+app.use("/news_feed", newsFeed);
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

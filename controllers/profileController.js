@@ -1,26 +1,14 @@
-import connectionModel from "../models/connectionModel.js";
 import userModel from "../models/userModel.js";
 
+/**
+ * @api /profile
+ * @method GET
+ * @param {Content-Type, Authorization} req headers
+ * @returns 200, 401, 404, 500
+ */
 export const getProfile = async (req, res) => {
   try {
-    var user, userA, userB;
-    if (req.body.uid) {
-      if (req.user < req.body.uid) {
-        userA = req.user;
-        userB = req.body.uid;
-      } else {
-        userB = req.user;
-        userA = req.body.uid;
-      }
-
-      if (!connectionModel.findOne({ userA, userB, status: 1 })) {
-        return res.sendStatus(405);
-      }
-
-      user = await userModel.findById(req.body.uid);
-    } else {
-      user = await userModel.findById(req.user);
-    }
+    const user = await userModel.findById(req.user);
 
     if (!user) {
       return res.sendStatus(404);
@@ -40,6 +28,14 @@ export const getProfile = async (req, res) => {
   }
 };
 
+/**
+ * @api /profile
+ * @method POST
+ * @param {Content-Type, Authorization} req headers
+ * @param {image, cover} req files
+ * @param {name, bio, address} req body
+ * @returns 200, 401, 500
+ */
 export const editProfile = async (req, res) => {
   try {
     var user = await userModel.findById(req.user);
@@ -70,6 +66,31 @@ export const editProfile = async (req, res) => {
       cover: user.cover,
       address: user.address,
       bio: user.bio,
+    });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+/**
+ * @api /profile/view
+ * @method GET
+ * @param {Content-Type, Authorization} req headers
+ * @param {uid} req query
+ * @returns 200, 401, 405, 500
+ */
+export const viewProfile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.query.uid);
+
+    return res.status(200).json({
+      uid: user._id,
+      name: user.name,
+      image: user.image,
+      cover: user.cover,
+      bio: user.bio,
+      email: user.email,
+      address: user.address,
     });
   } catch (error) {
     return res.sendStatus(500);

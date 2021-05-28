@@ -93,53 +93,6 @@ export const search = async (req, res) => {
 };
 
 /**
- * @api /connection/search
- * @method GET
- * @param {Content-Type, Authorization} req headers
- * @param {email} req params
- * @returns 200, 404, 405, 500
- */
-/*
-export const search_user = async (req, res) => {
-  try {
-    const user = await userModel.findOne({
-      email: req.query.email,
-      verified: true,
-    });
-
-    if (!user) {
-      return res.sendStatus(404);
-    }
-
-    if (req.user < user._id) {
-      var userA = req.user;
-      var userB = user._id;
-    } else {
-      var userA = user._id;
-      var userB = req.user;
-    }
-
-    const connection = await connectionModel.findOne({
-      userA,
-      userB,
-      status: "2",
-    });
-
-    if (connection) {
-      return res.sendStatus(405);
-    }
-
-    return res
-      .status(200)
-      .json({ uid: user._id, name: user.name, email: user.email });
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(500);
-  }
-};
-*/
-
-/**
  * @api /connection/send_request
  * @method POST
  * @param {Content-Type, Authorization} req headers
