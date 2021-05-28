@@ -26,6 +26,7 @@ export const createPost = async (req, res) => {
       news_feed = await newsFeedModel.findOne({ user: req.connections[i] });
       if (!news_feed) {
         news_feed = new newsFeedModel({ user: req.connections[i] });
+        news_feed.news_feed = [];
       }
       news_feed.news_feed.push(post._id);
       await news_feed.save();

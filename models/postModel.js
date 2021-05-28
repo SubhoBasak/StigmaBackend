@@ -5,8 +5,8 @@ const postSchema = mongoose.Schema(
     user: { type: String, required: [true, "Invalid user"] },
     caption: String,
     photo: String,
-    likes: { Number, default: 0 },
-    shares: { Number, default: 0 },
+    loves: { type: Number, default: 0 },
+    shares: { type: Number, default: 0 },
     comment: [
       {
         user: { type: String, required: [true, "Invalid user"] },
