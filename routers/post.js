@@ -12,7 +12,6 @@ import {
   createPost,
   deletePost,
   getPost,
-  likePost,
   sharePost,
 } from "../controllers/postController.js";
 
@@ -23,7 +22,6 @@ router
   .get(authUser, getPost)
   .post(authUser, getConnections, createPost)
   .delete(authUser, deletePost);
-router.post("/like", authUser, fetchPost, sortUser, isConnected, likePost);
 router.post("/share", authUser, fetchPost, sortUser, isConnected, sharePost);
 
 export default router;

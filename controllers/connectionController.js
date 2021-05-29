@@ -87,7 +87,6 @@ export const search = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };
@@ -119,9 +118,8 @@ export const send_request = async (req, res) => {
 
     connection = new connectionModel({ userA, userB, last, status: "0" });
     await connection.save();
-    return res.sendStatus(200);
+    return res.status(200).json({ cid: connection._id });
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };
@@ -301,12 +299,12 @@ export const get_blocked = async (req, res) => {
 export const block_user = async (req, res) => {
   try {
     var last;
-    if (req.user < req.body.user) {
+    if (req.user < req.body.uid) {
       var userA = req.user;
-      var userB = req.body.user;
+      var userB = req.body.uid;
       last = true;
     } else {
-      var userA = req.body.user;
+      var userA = req.body.uid;
       var userB = req.user;
       last = false;
     }
@@ -319,7 +317,6 @@ export const block_user = async (req, res) => {
     await block.save();
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };

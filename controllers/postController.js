@@ -28,7 +28,7 @@ export const createPost = async (req, res) => {
         news_feed = new newsFeedModel({ user: req.connections[i] });
         news_feed.news_feed = [];
       }
-      news_feed.news_feed.push(post._id);
+      news_feed.news_feed.push({ pid: post._id });
       await news_feed.save();
     }
 
@@ -49,16 +49,6 @@ export const getPost = async (req, res) => {
   try {
     const posts = await postModel.find({ user: req.user });
     return res.status(200).json(posts);
-  } catch (error) {
-    return res.sendStatus(500);
-  }
-};
-
-export const likePost = async (req, res) => {
-  try {
-    req.post_details.like++;
-    await req.post_details.save();
-    return res.sendStatus(200);
   } catch (error) {
     return res.sendStatus(500);
   }
