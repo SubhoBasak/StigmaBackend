@@ -13,6 +13,7 @@ import {
   deletePost,
   getPost,
   sharePost,
+  viewPost,
 } from "../controllers/postController.js";
 
 const router = express.Router();
@@ -22,6 +23,15 @@ router
   .get(authUser, getPost)
   .post(authUser, getConnections, createPost)
   .delete(authUser, deletePost);
-router.post("/share", authUser, fetchPost, sortUser, isConnected, sharePost);
+router.post(
+  "/share",
+  authUser,
+  fetchPost,
+  sortUser,
+  isConnected,
+  getConnections,
+  sharePost
+);
+router.get("/view", authUser, sortUser, isConnected, viewPost);
 
 export default router;
