@@ -1,4 +1,5 @@
 import newsFeedModel from "../models/newsFeedModel.js";
+import notificationModel from "../models/notificationModel.js";
 import postModel from "../models/postModel.js";
 import userModel from "../models/userModel.js";
 
@@ -103,6 +104,17 @@ export const lovePost = async (req, res) => {
           news_feed_post.loved = true;
           await post.save();
           await news_feed.save();
+
+          // create notification for source post user
+          var cur_user = await userModel.findById(req.user);
+          var notification = new notificationModel({
+            user: post.user,
+            pid: post._id,
+            name: cur_user.name,
+            status: "0",
+          });
+          await notification.save();
+
           return res.sendStatus(200);
         }
       } else {

@@ -12,6 +12,7 @@ import connection from "./routers/connection.js";
 import profile from "./routers/profile.js";
 import post from "./routers/post.js";
 import newsFeed from "./routers/newsFeed.js";
+import notification from "./routers/notification.js";
 
 dotenv.config();
 
@@ -41,5 +42,6 @@ app.use("/connection", connection);
 app.use("/profile", profile);
 app.use("/post", post);
 app.use("/news_feed", newsFeed);
+app.use("/notification", notification);
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

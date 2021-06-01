@@ -1,5 +1,7 @@
 import postModel from "../models/postModel.js";
 import newsFeedModel from "../models/newsFeedModel.js";
+import notificationModel from "../models/notificationModel.js";
+import userModel from "../models/userModel.js";
 
 /**
  * @api /post
@@ -91,6 +93,17 @@ export const sharePost = async (req, res) => {
     req.post_details.shares++;
     await new_post.save();
     await req.post_details.save();
+
+    // create notification for owner of the source post
+    var cur_user = await userModel.findById(req.user);
+
+    var notification = new notificationModel({
+      user: req.post_details.user,
+      pid: req.post_details._id,
+      name: cur_user.name,
+      status: "1",
+    });
+    await notification.save();
 
     // save to connected user's news feed
     var news_feed;
