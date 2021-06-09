@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import upload from "express-fileupload";
+import http from "http";
+import { Server } from "socket.io";
 
 // import routes
 import user from "./routers/user.js";
@@ -14,9 +16,14 @@ import post from "./routers/post.js";
 import newsFeed from "./routers/newsFeed.js";
 import notification from "./routers/notification.js";
 
+// import namespaces
+import commentNamespace from "./namespaces/commentNamespaces.js";
+
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 const PORT = process.env.PORT || 5000;
 
@@ -44,4 +51,6 @@ app.use("/post", post);
 app.use("/news_feed", newsFeed);
 app.use("/notification", notification);
 
-app.listen(PORT, () => console.log("Server is running on port " + PORT));
+io.of("/comment").on("connection", commentNamespace);
+
+server.listen(PORT, () => console.log("Server is running on port " + PORT));
