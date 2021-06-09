@@ -46,7 +46,6 @@ export const getNewsFeed = async (req, res) => {
 
     return res.status(200).json(all_news_feed);
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };

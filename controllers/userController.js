@@ -43,7 +43,6 @@ export const registerUser = async (req, res) => {
     //     text: "Thank you for sign up with us. Your OTP is " + req.body.otp,
     //   });
     // } catch (error) {
-    //   console.log(error);
     //   return res.sendStatus(500);
     // }
 
@@ -52,7 +51,6 @@ export const registerUser = async (req, res) => {
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };

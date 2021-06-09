@@ -38,7 +38,6 @@ export const createPost = async (req, res) => {
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log("error is", error);
     return res.sendStatus(500);
   }
 };
@@ -57,7 +56,6 @@ export const getPost = async (req, res) => {
       .sort({ createdAt: "desc" });
     return res.status(200).json(posts);
   } catch (error) {
-    console.log(error);
     return res.sendStatus(500);
   }
 };
@@ -207,9 +205,6 @@ export const viewPostDetails = async (req, res) => {
     // check weather this post is in the news feed of this user or not
     nfeed = nfeed.news_feed.filter((pst) => pst.pid == req.post_details._id)[0];
     if (!nfeed) return res.sendStatus(405);
-
-    console.log(req.post_details);
-    console.log(nfeed);
 
     const result = {
       uid: user._id,
