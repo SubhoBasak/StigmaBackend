@@ -160,6 +160,20 @@ export const postDetails = async (req, res) => {
     const post = await postModel.findOne({ _id: pid, user: req.user });
     const user = await userModel.findById(req.user);
 
+    var comments = [];
+    var tmp_user = null;
+    for (var i = 0; i < post.comment.length; i++) {
+      tmp_user = await userModel.findById(post.comment[i].user);
+      if (!tmp_user) continue;
+      comments.push({
+        cid: i,
+        uid: tmp_user._id,
+        name: tmp_user.name,
+        profile: tmp_user.image,
+        comment: post.comment[i].comment,
+      });
+    }
+
     if (post)
       return res.status(200).json({
         pid: post._id,
@@ -167,7 +181,7 @@ export const postDetails = async (req, res) => {
         photo: post.photo,
         love: post.loves,
         share: post.shares,
-        comment: post.comment,
+        comment: comments,
         name: user.name,
         profile: user.image,
         uid: user._id,
@@ -206,6 +220,20 @@ export const viewPostDetails = async (req, res) => {
     nfeed = nfeed.news_feed.filter((pst) => pst.pid == req.post_details._id)[0];
     if (!nfeed) return res.sendStatus(405);
 
+    var comments = [];
+    var tmp_user = null;
+    for (var i = 0; i < req.post_details.comment.length; i++) {
+      tmp_user = await userModel.findById(req.post_details.comment[i].user);
+      if (!tmp_user) continue;
+      comments.push({
+        cid: i,
+        uid: tmp_user._id,
+        name: tmp_user.name,
+        profile: tmp_user.image,
+        comment: req.post_details.comment[i].comment,
+      });
+    }
+
     const result = {
       uid: user._id,
       profile: user.image,
@@ -214,7 +242,7 @@ export const viewPostDetails = async (req, res) => {
       photo: req.post_details.photo,
       love: req.post_details.loves,
       share: req.post_details.shares,
-      comment: req.post_details.comment,
+      comment: comments,
       loved: nfeed.loved,
     };
     return res.status(200).json(result);
