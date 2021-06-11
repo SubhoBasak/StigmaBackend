@@ -38,15 +38,20 @@ const commentNamespace = async (socket) => {
       if (!post) socket.emit("err", { status: 404 });
 
       var userA, userB;
-      if (user._id < post.user) {
-        userA = user._id;
-        userB = post.user;
-      } else {
-        userA = post.user;
-        userB = user._id;
+      if (!(post.user == user._id)) {
+        if (user._id < post.user) {
+          userA = user._id;
+          userB = post.user;
+        } else {
+          userA = post.user;
+          userB = user._id;
+        }
       }
 
-      if (await connectionModel.findOne({ userA, userB, status: "1" })) {
+      if (
+        post.user == user._id ||
+        (await connectionModel.findOne({ userA, userB, status: "1" }))
+      ) {
         post.comment.push({
           user: user._id,
           comment: data.comment,
@@ -61,13 +66,44 @@ const commentNamespace = async (socket) => {
         await post.save();
         await notf.save();
 
-        socket.emit("submit", {
-          cid: new Date().toString(),
+        var cid = new Date().toString();
+        socket.emit("new", {
+          cid,
           uid: user._id,
           name: user.name,
           profile: user.image,
           comment: data.comment,
         });
+
+        var unique_users = [];
+        for (var i = 0; i < post.comment.length; i++) {
+          if (post.comment[i].user == user._id) continue;
+          var flag = true;
+          for (var j = 0; j < unique_users.length; j++) {
+            if (post.comment[i].user == unique_users[j]) {
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            unique_users.push(post.comment[i].user);
+          }
+        }
+
+        console.log(unique_users);
+
+        for (var u = 0; u < unique_users.length; u++) {
+          u = await userModel.findById(unique_users[u]);
+          if (u && u.commentId) {
+            socket.to(u.commentId).emit("new", {
+              cid,
+              uid: user._id,
+              name: user.name,
+              profile: user.image,
+              comment: data.comment,
+            });
+          }
+        }
       } else {
         socket.emit("err", { status: 405 });
       }
