@@ -15,9 +15,7 @@ import profile from "./routers/profile.js";
 import post from "./routers/post.js";
 import newsFeed from "./routers/newsFeed.js";
 import notification from "./routers/notification.js";
-
-// import namespaces
-import commentNamespace from "./namespaces/commentNamespaces.js";
+import comment from "./routers/comment.js";
 
 dotenv.config();
 
@@ -45,12 +43,11 @@ mongoose
 
 // routes
 app.use("/user", user);
+app.use("/comment", comment);
 app.use("/connection", connection);
 app.use("/profile", profile);
 app.use("/post", post);
 app.use("/news_feed", newsFeed);
 app.use("/notification", notification);
-
-io.of("/comment").on("connection", commentNamespace);
 
 server.listen(PORT, () => console.log("Server is running on port " + PORT));

@@ -6,7 +6,6 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: [true, "Enter the password"] },
   verified: { type: Boolean, default: false },
   chatId: String,
-  commentId: String,
   image: String,
   cover: String,
   bio: String,
