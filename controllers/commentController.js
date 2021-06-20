@@ -3,7 +3,6 @@ import notificationModel from "../models/notificationModel.js";
 
 export const commentNow = async (req, res) => {
   try {
-    console.log(req.body);
     const user = await userModel.findById(req.user);
     req.post_details.comment.push({
       user: req.user,
