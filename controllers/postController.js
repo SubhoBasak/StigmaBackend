@@ -70,13 +70,12 @@ export const getPost = async (req, res) => {
 export const viewPost = async (req, res) => {
   try {
     const posts = await postModel
-      .find(
-        { user: req.query.uid },
-        { _id: 1, user: 1, photo: 1, loves: 1, shares: 1, comment: 0 }
-      )
+      .find({ user: req.query.uid })
+      .select(["_id", "user", "photo", "loves", "shares"])
       .sort({ createdAt: "desc" });
     return res.status(200).json(posts);
   } catch (error) {
+    console.log(error);
     return res.sendStatus(500);
   }
 };
