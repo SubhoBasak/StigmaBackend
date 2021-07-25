@@ -10,7 +10,7 @@ var transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "subhoapi@gmail.com",
+    user: "stigmabackend@gmail.com",
     pass: process.env.EMAIL_PSWD,
   },
 });
@@ -36,7 +36,7 @@ export const registerUser = async (req, res) => {
 
     try {
       await transporter.sendMail({
-        from: "subhoapi@gmail.com",
+        from: "stigmabackend@gmail.com",
         to: req.body.email,
         subject: "Verify Email",
         text: "Thank you for sign up with us. Your OTP is " + req.body.otp,
@@ -150,7 +150,7 @@ export const forgotPassword = async (req, res) => {
 
     try {
       await transporter.sendMail({
-        from: "subhoapi@gmail.com",
+        from: "stigmabackend@gmail.com",
         to: user.email,
         subject: "Forgot Password",
         text: "Your OTP is " + user.otp,
