@@ -77,11 +77,13 @@ export const editProfile = async (req, res) => {
  * @method GET
  * @param {Content-Type, Authorization} req headers
  * @param {uid} req query
- * @returns 200, 401, 405, 500
+ * @returns 200, 401, 404, 405, 500
  */
 export const viewProfile = async (req, res) => {
   try {
     const user = await userModel.findById(req.query.uid);
+
+    if (!user) return res.sendStatus(404);
 
     return res.status(200).json({
       uid: user._id,

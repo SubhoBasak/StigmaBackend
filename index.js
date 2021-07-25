@@ -16,6 +16,10 @@ import post from "./routers/post.js";
 import newsFeed from "./routers/newsFeed.js";
 import notification from "./routers/notification.js";
 import comment from "./routers/comment.js";
+import message from "./routers/message.js";
+
+// import namespaces
+import messageNamespace from "./namespaces/messageNamespace.js";
 
 dotenv.config();
 
@@ -49,5 +53,8 @@ app.use("/profile", profile);
 app.use("/post", post);
 app.use("/news_feed", newsFeed);
 app.use("/notification", notification);
+app.use("/message", message);
 
 server.listen(PORT, () => console.log("Server is running on port " + PORT));
+
+io.of("/message").on("connect", messageNamespace);
